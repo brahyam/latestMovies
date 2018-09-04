@@ -32,7 +32,6 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 26
     compileSdkVersion = 26
-    buildToolsVersion = '26.0.2'
 
     // Dependencies
     supportLibraryVersion = '26.1.0'
@@ -47,4 +46,6 @@ ext {
     roomVersion = "1.0.0"
     daggerVersion = '2.16'
     dexmakerVersion = '1.2'
+    retrofitVersion = '2.4.0'
+    retrofitGsonVersion = '2.1.0'
 }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Movie Alert</string>
+    <string name="movie_list_load_error">There was an error loading the movie list. Please try again later.</string>
+    <string name="movie_selected">Movie Selected</string>
 </resources>

@@ -48,4 +48,6 @@ ext {
     dexmakerVersion = '1.2'
     retrofitVersion = '2.4.0'
     retrofitGsonVersion = '2.1.0'
+    constraintLayoutVersion = '1.1.0'
+    picassoVersion = '2.71828'
 }

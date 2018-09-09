@@ -2,6 +2,8 @@ package com.example.brahyam.moviealert.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
@@ -21,22 +23,23 @@ public class Movie {
     @NonNull
     private String overview;
 
-    @NonNull
+    @TypeConverters(DateConverter.class)
+    @SerializedName("release_date")
     private Date releaseDate;
 
     @SerializedName("poster_path")
-    private String posterUrl;
+    private String posterPath;
 
     @SerializedName("backdrop_path")
-    private String backDropUrl;
+    private String backdropPath;
 
-    public Movie(int id, String title, String overview, Date releaseDate, String posterUrl, String backDropUrl) {
+    public Movie(int id, String title, String overview, Date releaseDate, String posterPath, String backdropPath) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.posterUrl = posterUrl;
-        this.backDropUrl = backDropUrl;
+        this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
     }
 
     public int getId() {
@@ -71,24 +74,36 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public String getPosterUrl() {
-        return posterUrl;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public void setPosterUrl(String posterUrl) {
-        this.posterUrl = posterUrl;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
-    public String getBackDropUrl() {
-        return backDropUrl;
+    public String getBackdropPath() {
+        return backdropPath;
     }
 
-    public void setBackDropUrl(String backDropUrl) {
-        this.backDropUrl = backDropUrl;
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     @Override
     public String toString() {
         return "Movie{id:" + id + ",title:" + title + ",date:" + releaseDate.toString() + "}";
+    }
+
+    public static class DateConverter {
+        @TypeConverter
+        public static Date toDate(Long timestamp) {
+            return timestamp == null ? null : new Date(timestamp);
+        }
+
+        @TypeConverter
+        public static Long toTimestamp(Date date) {
+            return date == null ? null : date.getTime();
+        }
     }
 }

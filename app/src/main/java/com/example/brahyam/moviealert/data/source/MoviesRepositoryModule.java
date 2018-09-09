@@ -41,7 +41,9 @@ public class MoviesRepositoryModule {
     MoviesDatabase provideDB(Application context) {
         return Room.databaseBuilder(
                 context.getApplicationContext(),
-                MoviesDatabase.class, "Movies.db").build();
+                MoviesDatabase.class, "Movies.db")
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
     @Singleton

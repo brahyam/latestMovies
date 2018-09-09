@@ -20,8 +20,8 @@ import retrofit2.http.Query;
 @Singleton
 public class MoviesRemoteDataSource implements MoviesDataSource {
 
-    private final static String API_URL = "https://api.themoviedb.org/3";
-    private final static String API_KEY = "97929cc7079a3c3a040c62f8bcd49995";
+    private final static String API_URL = "https://api.themoviedb.org/3/";
+    public final static String API_KEY = "97929cc7079a3c3a040c62f8bcd49995";
     private final static String TAG = MoviesRemoteDataSource.class.getSimpleName();
     private MoviesApi moviesApi;
 
@@ -103,10 +103,10 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
     }
 
     public interface MoviesApi {
-        @GET("/movie/upcoming")
+        @GET("movie/upcoming")
         Call<UpcomingMoviesApiResponse> getUpcomingMovies(@Query("api_key") String apiKey, @Query("page") int page);
 
-        @GET("/movie/{id}")
+        @GET("movie/{id}")
         Call<Movie> getMovie(@Query("api_key") String apiKey, @Query("id") Integer id);
     }
 }

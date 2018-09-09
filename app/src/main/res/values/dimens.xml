@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="movieCardBottom">4dp</dimen>
+    <dimen name="movieCardElevation">2dp</dimen>
+    <dimen name="movieCardRadius">0dp</dimen>
+    <dimen name="moviePosterWidth">100dp</dimen>
+    <dimen name="movieCardHorizontalMargin">16dp</dimen>
+    <dimen name="cardMovieTitleText">18sp</dimen>
+    <dimen name="cardMovieGenresTop">8dp</dimen>
+    <dimen name="cardMovieHorizontalMargin">16dp</dimen>
+    <dimen name="cardMovieGenresText">14sp</dimen>
+    <dimen name="cardMovieReleaseText">12sp</dimen>
+    <dimen name="errorTextView">18sp</dimen>
+</resources>

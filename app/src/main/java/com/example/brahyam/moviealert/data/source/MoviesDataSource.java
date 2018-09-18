@@ -12,7 +12,7 @@ import java.util.List;
 public interface MoviesDataSource {
 
     interface LoadMoviesCallback {
-        void onMoviesLoaded(List<Movie> movies);
+        void onMoviesLoaded(List<Movie> movies, int loadedPage, int totalPages);
 
         void onDataNotAvailable();
     }

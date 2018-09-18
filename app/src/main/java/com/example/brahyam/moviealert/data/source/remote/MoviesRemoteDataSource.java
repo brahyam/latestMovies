@@ -41,7 +41,7 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
             @Override
             public void onResponse(Call<UpcomingMoviesApiResponse> call, Response<UpcomingMoviesApiResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    callback.onMoviesLoaded(response.body().getResults());
+                    callback.onMoviesLoaded(response.body().getResults(), response.body().getPage(), response.body().getTotalPages());
                 } else {
                     Log.e(TAG, "response unsuccessful or with empty body ");
                     callback.onDataNotAvailable();

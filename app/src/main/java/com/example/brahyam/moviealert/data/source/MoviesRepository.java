@@ -1,6 +1,7 @@
 package com.example.brahyam.moviealert.data.source;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.brahyam.moviealert.data.Movie;
 
@@ -15,9 +16,11 @@ import javax.inject.Singleton;
 @Singleton
 public class MoviesRepository implements MoviesDataSource {
 
+    private static final String TAG = MoviesRepository.class.getSimpleName();
     private final MoviesDataSource moviesRemoteDataSource;
     private final MoviesDataSource moviesLocalDataSource;
 
+    private int totalPages = 0;
     private int currentPage = -1;
     Map<Integer, Movie> cachedMovies;
 
@@ -31,18 +34,20 @@ public class MoviesRepository implements MoviesDataSource {
 
     @Override
     public void getMovies(@NonNull final Integer page, @NonNull final LoadMoviesCallback callback) {
+        Log.d(TAG, "getMovies(page:" + page + ") currentPage=" + currentPage);
         if (cachedMovies != null && !cacheIsDirty && page <= currentPage) {
-            callback.onMoviesLoaded(new ArrayList<>(cachedMovies.values()));
+            callback.onMoviesLoaded(new ArrayList<>(cachedMovies.values()), currentPage, totalPages);
         }
 
-        if (cacheIsDirty) {
+        if (cacheIsDirty || page > 1) { // fetch from repo all pages greater than 1
             getMoviesFromRemoteDataSource(page, callback);
         } else {
             moviesLocalDataSource.getMovies(page, new LoadMoviesCallback() {
+
                 @Override
-                public void onMoviesLoaded(List<Movie> movies) {
+                public void onMoviesLoaded(List<Movie> movies, int loadedPage, int totalPages) {
                     refreshCache(movies);
-                    callback.onMoviesLoaded(movies);
+                    callback.onMoviesLoaded(movies, loadedPage, totalPages);
                 }
 
                 @Override
@@ -55,12 +60,13 @@ public class MoviesRepository implements MoviesDataSource {
 
     private void getMoviesFromRemoteDataSource(final Integer page, final LoadMoviesCallback callback) {
         moviesRemoteDataSource.getMovies(page, new LoadMoviesCallback() {
+
             @Override
-            public void onMoviesLoaded(List<Movie> movies) {
+            public void onMoviesLoaded(List<Movie> movies, int loadedPage, int totalPages) {
                 refreshCache(movies);
                 refreshLocalDataSource(movies);
-                currentPage = page;
-                callback.onMoviesLoaded(movies);
+                currentPage = loadedPage;
+                callback.onMoviesLoaded(movies, loadedPage, totalPages);
             }
 
             @Override

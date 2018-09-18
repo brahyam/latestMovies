@@ -2,6 +2,7 @@ package com.example.brahyam.moviealert.movies;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.example.brahyam.moviealert.data.Movie;
 import com.example.brahyam.moviealert.data.source.MoviesDataSource;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 public class MoviesPresenter implements MoviesContract.Presenter {
 
     private static final Integer DEFAULT_PAGE = 1;
+    private static final String TAG = MoviesPresenter.class.getSimpleName();
     private final MoviesRepository moviesRepository;
 
     @Nullable
@@ -30,6 +32,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     @Override
     public void loadMovies(boolean forceUpdate, final Integer page) {
+        Log.d(TAG, "Loading movies page:" + page);
         if (moviesView != null) {
             moviesView.setLoadingIndicator(true);
         }
@@ -39,15 +42,17 @@ public class MoviesPresenter implements MoviesContract.Presenter {
         }
 
         moviesRepository.getMovies(page, new MoviesDataSource.LoadMoviesCallback() {
+
             @Override
-            public void onMoviesLoaded(List<Movie> movies) {
+            public void onMoviesLoaded(List<Movie> movies, int loadedPage, int totalPages) {
                 if (moviesView == null || !moviesView.isActive()) {
                     return;
                 }
                 moviesView.setLoadingIndicator(false);
                 // TODO: Handle empty movie list
                 if (firstLoad) {
-                    moviesView.showMovies(movies, page);
+                    moviesView.showMovies(movies, totalPages);
+                    firstLoad = false;
                 } else {
                     moviesView.showMoviesNextPage(movies);
                 }

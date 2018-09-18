@@ -1,10 +1,10 @@
 package com.example.brahyam.moviealert.movies;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,8 @@ import dagger.android.support.DaggerFragment;
 @ActivityScoped
 public class MoviesFragment extends DaggerFragment implements MoviesContract.View {
 
+    private static final String TAG = MoviesFragment.class.getSimpleName();
+
     @Inject
     MoviesContract.Presenter presenter;
 
@@ -44,30 +46,14 @@ public class MoviesFragment extends DaggerFragment implements MoviesContract.Vie
 
     private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 
-    /**
-     * Handles infinite scrolling
-     */
-    private PaginationListener paginationListener = new PaginationListener(linearLayoutManager) {
+    private EndlessRecyclerViewScrollListener paginationListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
         @Override
-        protected void loadPage() {
-            isLoading = true;
-            currentPage++;
-            presenter.loadMovies(false, currentPage);
-        }
-
-        @Override
-        protected int totalPageCount() {
-            return totalPages;
-        }
-
-        @Override
-        protected boolean isLastPage() {
-            return isLastPage;
-        }
-
-        @Override
-        protected boolean isLoading() {
-            return isLoading;
+        public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            Log.d(TAG, "RecyclerView requested load page:" + page);
+            if (!isLoading) {
+                int newPage = page + 1;
+                presenter.loadMovies(false, newPage);
+            }
         }
     };
 
@@ -95,6 +81,7 @@ public class MoviesFragment extends DaggerFragment implements MoviesContract.Vie
     public void onResume() {
         super.onResume();
         presenter.takeView(this);
+        isLoading = true; // taking the view causes the presenter to load the movies
     }
 
     @Override
@@ -109,7 +96,6 @@ public class MoviesFragment extends DaggerFragment implements MoviesContract.Vie
         View root = inflater.inflate(R.layout.movies_fragment, container, false);
         recyclerMovies = root.findViewById(R.id.recyclerMovies);
         recyclerMovies.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerMovies.setLayoutManager(linearLayoutManager);
         recyclerMovies.addOnScrollListener(paginationListener);
         recyclerMovies.setAdapter(adapter);
@@ -132,6 +118,7 @@ public class MoviesFragment extends DaggerFragment implements MoviesContract.Vie
         totalPages = pages;
         adapter.replaceData(movies);
         setLoadingIndicator(false);
+        isLoading = false;
         if (currentPage == totalPages) {
             // TODO: add loading item to list
             isLastPage = true;
@@ -142,6 +129,8 @@ public class MoviesFragment extends DaggerFragment implements MoviesContract.Vie
     public void showMoviesNextPage(List<Movie> movies) {
         adapter.replaceData(movies);
         setLoadingIndicator(false);
+        isLoading = false;
+        currentPage++;
     }
 
     @Override

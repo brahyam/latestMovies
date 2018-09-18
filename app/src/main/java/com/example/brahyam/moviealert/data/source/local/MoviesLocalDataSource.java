@@ -36,7 +36,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
                         if (movies.isEmpty()) {
                             callback.onDataNotAvailable();
                         } else {
-                            callback.onMoviesLoaded(movies);
+                            callback.onMoviesLoaded(movies, 1, 1);
                         }
                     }
                 });

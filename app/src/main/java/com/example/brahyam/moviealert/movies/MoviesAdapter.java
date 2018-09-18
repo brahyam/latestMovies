@@ -1,5 +1,6 @@
 package com.example.brahyam.moviealert.movies;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.example.brahyam.moviealert.util.MovieImageUrlBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,10 +36,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Movie movie = movies.get(position);
         Picasso.get()
                 .load(MovieImageUrlBuilder.buildPosterUrl(movie.getPosterPath()))
+                .placeholder(R.drawable.poster_placeholder)
                 .into(holder.imgPoster);
         holder.txtTitle.setText(movie.getTitle());
         holder.txtReleaseDate.setText(
@@ -62,7 +65,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     public void replaceData(List<Movie> movies) {
-        this.movies = movies;
+        if (this.movies == null) {
+            this.movies = new ArrayList<>();
+        }
+        this.movies.addAll(movies);
         notifyDataSetChanged();
     }
 
